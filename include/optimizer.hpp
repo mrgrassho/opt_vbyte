@@ -8,7 +8,7 @@ namespace pvb {
     struct optimizer {
 
         typedef Encoder                  VBBlock;
-        typedef compact_ranked_bitvector RBBlock;
+        typedef varintg8iu_block         RBBlock;
 
         static const int invalid_block_type = -1;
 
