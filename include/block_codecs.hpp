@@ -186,18 +186,19 @@ struct varintg8iu_block {
 
             return readSize;
         }
+
+        uint64_t posting_cost(posting_type x, uint64_t base) {
+            return this->getNumByteNeeded(x-base) * 8;
+        }
     };
 
     static inline uint64_t posting_cost(posting_type x, uint64_t base) {
-        // TODO - Check
         if (x == 0 or x - base == 0) {
             return 8;
         }
-
+        codec_type varint_codec;
         assert(x >= base);
-        return 8 *
-               succinct::util::ceil_div(ceil_log2(x - base + 1),  // delta gap
-                                        7);
+        return (uint64_t) varint_codec.posting_cost(x, base);
     }
 
     template <typename Iterator>
