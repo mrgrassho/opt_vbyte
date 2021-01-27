@@ -24,7 +24,7 @@ namespace pvb {
                 > enumerator;
 
         typedef VByteBlockType           VBBlock;
-        typedef compact_ranked_bitvector RBBlock;
+        typedef varintg8iu_block RBBlock;
 
         template<typename Iterator>
         static void write(succinct::bit_vector_builder& bvb,
