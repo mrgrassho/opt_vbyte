@@ -188,18 +188,20 @@ struct varintg8iu_block {
         }
 
         uint64_t posting_cost(posting_type x, uint64_t base) {
-            return this->getNumByteNeeded(x-base) * 8;
+            return this->getNumByteNeeded(x-base);
         }
     };
 
     static inline uint64_t posting_cost(posting_type x, uint64_t base) {
         if (x == 0 or x - base == 0) {
-            return 8;
+            return 9; // +1 header
         }
         codec_type varint_codec;
         assert(x >= base);
-        // val = size(x-base) bytes + header = 1 bit
-        return (uint64_t) varint_codec.posting_cost(x, base) + 1;
+        // val = size(x-base) bytes + header
+        uint64_t val = (uint64_t) varint_codec.posting_cost(x, base);
+        uint64_t header = val;
+        return val * 8 + header;
     }
 
     template <typename Iterator>
@@ -397,7 +399,7 @@ struct varintgb_block {
 
     static inline uint64_t posting_cost(posting_type x, uint64_t base) {
         if (x == 0 or x - base == 0) {
-            return 8;
+            return 10; //+2 header
         }
         assert(x >= base);
         // val = size(x-base) bytes
