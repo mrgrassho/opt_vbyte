@@ -396,6 +396,7 @@ struct maskedvbyte_block {
 
 struct varintgb_block {
     static const uint64_t block_size = constants::block_size;
+    static const int type = 1;
 
     static inline uint64_t posting_cost(posting_type x, uint64_t base) {
         if (x == 0 or x - base == 0) {
