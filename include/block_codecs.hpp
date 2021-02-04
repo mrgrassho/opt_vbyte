@@ -191,17 +191,16 @@ struct varintg8iu_block {
             return this->getNumByteNeeded(x-base);
         }
     };
-
+    
     static inline uint64_t posting_cost(posting_type x, uint64_t base) {
         if (x == 0 or x - base == 0) {
-            return 9; // +1 header
+            return 9; // 8 bits value + 1 bit header
         }
-        codec_type varint_codec;
+
         assert(x >= base);
-        // val = size(x-base) bytes + header
-        uint64_t val = (uint64_t) varint_codec.posting_cost(x, base);
-        uint64_t header = val;
-        return val * 8 + header;
+        return 9 *
+               succinct::util::ceil_div(ceil_log2(x - base + 1),  // delta gap
+                                        7);
     }
 
     template <typename Iterator>
@@ -400,13 +399,13 @@ struct varintgb_block {
 
     static inline uint64_t posting_cost(posting_type x, uint64_t base) {
         if (x == 0 or x - base == 0) {
-            return 10; //+2 header
+            return 10; // 8 Bits value + 2 bits header
         }
+
         assert(x >= base);
-        // val = size(x-base) bytes
-        uint64_t val = (uint64_t) (((__builtin_clz( (uint32_t) x - base | 255) ^ 31) >> 3) + 1) * 8;
-        // header = 2 bits
-        return val + 2;
+        return 10 *
+               succinct::util::ceil_div(ceil_log2(x - base + 1),  // delta gap
+                                        7);
     }
 
     template <typename Iterator>
